@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Live Speech-to-Text with Translation</title>
+</head>
+<body>
+    <h1>Live Speech-to-Text with Translation</h1>
+    <form id="speechForm" method="post" enctype="multipart/form-data">
+        <input type="file" name="audio" id="audioInput" accept="audio/*" capture>
+        <label for="targetLanguage">Select Target Language:</label>
+        <select name="target_language" id="targetLanguage">
+            <option value="en">English</option>
+            <option value="es">Spanish</option>
+            <!-- Add more options for other languages -->
+        </select>
+        <input type="submit" value="Convert">
+    </form>
+    <p>Original Text: <span id="originalText"></span></p>
+    <p>Translated Text: <span id="translatedText"></span></p>
+
+    <script>
+        document.getElementById('speechForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+
+            fetch('/speech-to-text-and-translate', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('originalText').textContent = data.text;
+                document.getElementById('translatedText').textContent = data.translated_text;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
